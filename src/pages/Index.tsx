@@ -2,11 +2,13 @@ import { useState, useRef, useEffect } from "react";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatInput } from "@/components/ChatInput";
 import { TypingIndicator } from "@/components/TypingIndicator";
+import { findRelevantDocs, mockDocumentation } from "@/utils/documentationProcessor";
 import type { Message } from "@/types/chat";
+import { toast } from "sonner";
 
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
-  content: "Hello! How can I help you with documentation today?",
+  content: "Hello! How can I help you with documentation for Segment, mParticle, Lytics, or Zeotap today?",
 };
 
 const Index = () => {
@@ -22,23 +24,53 @@ const Index = () => {
     scrollToBottom();
   }, [messages, isTyping]);
 
+  const processQuery = async (query: string) => {
+    try {
+      const relevantDocs = findRelevantDocs(query, mockDocumentation);
+      
+      if (relevantDocs.length === 0) {
+        return "I couldn't find specific documentation for that query. Could you please rephrase or be more specific?";
+      }
+
+      const response = `Here's what I found:\n\n${relevantDocs
+        .map(
+          (doc, index) =>
+            `${index + 1}. ${doc.title}\n${doc.content}\nRead more: ${doc.url}\n`
+        )
+        .join("\n")}`;
+
+      return response;
+    } catch (error) {
+      console.error("Error processing query:", error);
+      toast.error("Error processing your query. Please try again.");
+      return "I encountered an error while processing your query. Please try again.";
+    }
+  };
+
   const handleSend = async (content: string) => {
     // Add user message
     const userMessage: Message = { role: "user", content };
     setMessages((prev) => [...prev, userMessage]);
     
-    // Simulate bot response
+    // Show typing indicator
     setIsTyping(true);
     
-    // In a real implementation, this is where you'd make an API call
-    setTimeout(() => {
+    try {
+      // Process the query and get response
+      const response = await processQuery(content);
+      
+      // Add bot response
       const botMessage: Message = {
         role: "assistant",
-        content: "I'm a demo chatbot. In the full implementation, I'll be able to answer questions about Segment, mParticle, Lytics, and Zeotap documentation.",
+        content: response,
       };
       setMessages((prev) => [...prev, botMessage]);
+    } catch (error) {
+      console.error("Error in chat:", error);
+      toast.error("Something went wrong. Please try again.");
+    } finally {
       setIsTyping(false);
-    }, 1000);
+    }
   };
 
   return (
