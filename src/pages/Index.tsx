@@ -8,7 +8,7 @@ import { toast } from "sonner";
 
 const INITIAL_MESSAGE: Message = {
   role: "assistant",
-  content: "Hello! How can I help you with documentation for Segment, mParticle, Lytics, or Zeotap today?",
+  content: "Hi! I'm your CDP Support Agent. How can I assist you with Segment, mParticle, Lytics, or Zeotap today? Feel free to ask about features, comparisons, or step-by-step guides!",
 };
 
 const Index = () => {
@@ -26,20 +26,39 @@ const Index = () => {
 
   const processQuery = async (query: string) => {
     try {
+      console.log("Processing query:", query);
       const relevantDocs = findRelevantDocs(query, mockDocumentation);
       
       if (relevantDocs.length === 0) {
         return "I couldn't find specific documentation for that query. Could you please rephrase or be more specific?";
       }
 
-      const response = `Here's what I found:\n\n${relevantDocs
+      // Enhanced response formatting for comparison queries
+      const isComparison = query.toLowerCase().includes(' vs ') || 
+        query.toLowerCase().includes('compare') || 
+        query.toLowerCase().includes('difference');
+
+      if (isComparison) {
+        return `Here's a comparison of the CDPs you asked about:\n\n${relevantDocs
+          .map(doc => `📊 ${doc.title}\n${doc.content}\nLearn more: ${doc.url}\n`)
+          .join("\n")}`;
+      }
+
+      // Enhanced response formatting for how-to queries
+      const isHowTo = query.toLowerCase().includes('how to');
+      if (isHowTo) {
+        return `Here's a step-by-step guide:\n\n${relevantDocs
+          .map(doc => `📝 ${doc.title}\n${doc.content}\nDetailed guide: ${doc.url}\n`)
+          .join("\n")}`;
+      }
+
+      // Default response format
+      return `Here's what I found:\n\n${relevantDocs
         .map(
           (doc, index) =>
             `${index + 1}. ${doc.title}\n${doc.content}\nRead more: ${doc.url}\n`
         )
         .join("\n")}`;
-
-      return response;
     } catch (error) {
       console.error("Error processing query:", error);
       toast.error("Error processing your query. Please try again.");
@@ -76,9 +95,9 @@ const Index = () => {
   return (
     <div className="mx-auto flex h-screen max-w-3xl flex-col overflow-hidden p-4 pt-8">
       <div className="mb-4">
-        <h1 className="text-center text-2xl font-semibold">Documentation Assistant</h1>
+        <h1 className="text-center text-2xl font-semibold">CDP Support Agent</h1>
         <p className="text-center text-sm text-muted-foreground">
-          Ask questions about Segment, mParticle, Lytics, and Zeotap documentation
+          Your expert guide for CDP platforms - Ask me anything!
         </p>
       </div>
       
