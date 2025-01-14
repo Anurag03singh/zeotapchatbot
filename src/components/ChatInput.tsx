@@ -35,12 +35,12 @@ export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
   };
 
   return (
-    <div className="flex items-end gap-2 border-t bg-background/95 p-4 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+    <div className="flex items-end gap-2 rounded-xl border bg-white/80 p-4 backdrop-blur supports-[backdrop-filter]:bg-white/60">
       <Textarea
         ref={textareaRef}
         rows={1}
-        placeholder="Ask a question..."
-        className="min-h-[44px] max-h-[200px] resize-none rounded-xl px-4 py-3"
+        placeholder="Ask me anything about CDPs..."
+        className="min-h-[44px] max-h-[200px] resize-none rounded-xl border-purple-100 bg-white px-4 py-3 focus-visible:ring-purple-400"
         value={message}
         onChange={(e) => setMessage(e.target.value)}
         onKeyDown={handleKeyDown}
@@ -48,7 +48,7 @@ export const ChatInput = ({ onSend, disabled }: ChatInputProps) => {
       />
       <Button
         size="icon"
-        className="h-11 w-11 shrink-0 rounded-xl"
+        className="h-11 w-11 shrink-0 rounded-xl bg-gradient-to-r from-purple-500 to-blue-500 transition-transform hover:scale-105 hover:from-purple-600 hover:to-blue-600"
         onClick={handleSubmit}
         disabled={!message.trim() || disabled}
       >

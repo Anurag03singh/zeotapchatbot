@@ -93,25 +93,33 @@ const Index = () => {
   };
 
   return (
-    <div className="mx-auto flex h-screen max-w-3xl flex-col overflow-hidden p-4 pt-8">
-      <div className="mb-4">
-        <h1 className="text-center text-2xl font-semibold">CDP Support Agent</h1>
-        <p className="text-center text-sm text-muted-foreground">
-          Your expert guide for CDP platforms - Ask me anything!
+    <div className="mx-auto flex h-screen max-w-4xl flex-col overflow-hidden p-4 pt-8">
+      <div className="mb-6 text-center">
+        <h1 className="bg-gradient-to-r from-purple-600 to-blue-500 bg-clip-text text-3xl font-bold text-transparent">
+          CDP Support Agent
+        </h1>
+        <p className="mt-2 text-sm text-muted-foreground">
+          Your expert guide for CDP platforms - Let's explore together! ✨
         </p>
       </div>
       
-      <div className="flex-1 overflow-y-auto rounded-2xl border bg-secondary/50 shadow-sm">
-        <div className="h-full overflow-y-auto p-4 scrollbar-hidden">
-          {messages.map((message, index) => (
-            <ChatMessage key={index} message={message} />
-          ))}
-          {isTyping && <TypingIndicator />}
+      <div className="relative flex-1 overflow-hidden rounded-2xl border bg-gradient-to-b from-purple-50 to-white shadow-lg">
+        <div className="absolute inset-0 bg-grid-black/[0.02]" />
+        
+        <div className="relative h-full overflow-y-auto p-4 scrollbar-hidden">
+          <div className="space-y-4">
+            {messages.map((message, index) => (
+              <ChatMessage key={index} message={message} />
+            ))}
+            {isTyping && <TypingIndicator />}
+          </div>
           <div ref={messagesEndRef} />
         </div>
       </div>
 
-      <ChatInput onSend={handleSend} disabled={isTyping} />
+      <div className="mt-4">
+        <ChatInput onSend={handleSend} disabled={isTyping} />
+      </div>
     </div>
   );
 };
